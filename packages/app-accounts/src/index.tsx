@@ -8,11 +8,8 @@ import './index.css';
 
 import React from 'react';
 
-import accountObservable from '@polkadot/ui-keyring/observable/accounts';
 import Tabs from '@polkadot/ui-app/Tabs';
-import withObservableBase from '@polkadot/ui-react-rx/with/observableBase';
 
-import { isNoAccounts } from './util/accounts';
 import Creator from './Creator';
 import Editor from './Editor';
 import Restorer from './Restorer';
@@ -26,7 +23,8 @@ type Props = I18nProps & {
 type Actions = 'create' | 'edit' | 'restore';
 
 type State = {
-  action: Actions
+  action: Actions,
+  isAccountsInEditor: boolean
 };
 
 // FIXME React-router would probably be the best route, not home-grown
@@ -37,20 +35,14 @@ const Components: { [index: string]: React.ComponentType<any> } = {
 };
 
 class AccountsApp extends React.PureComponent<Props, State> {
-  state: State = { action: 'edit' };
-
-  componentDidUpdate () {
-    const { accountAll } = this.props;
-    const { action } = this.state;
-
-    if (action === 'edit' && isNoAccounts(accountAll)) {
-      this.selectRestore();
-    }
-  }
+  state: State = {
+    action: 'edit',
+    isAccountsInEditor: true
+  };
 
   render () {
-    const { accountAll, t } = this.props;
-    const { action } = this.state;
+    const { t } = this.props;
+    const { action, isAccountsInEditor } = this.state;
     const Component = Components[action];
     const items = [
       {
@@ -68,7 +60,7 @@ class AccountsApp extends React.PureComponent<Props, State> {
     ];
 
     // Do not load Editor tab if no accounts
-    if (isNoAccounts(accountAll)) {
+    if (!isAccountsInEditor) {
       items.splice(0, 1);
     }
 
@@ -82,11 +74,19 @@ class AccountsApp extends React.PureComponent<Props, State> {
           />
         </header>
         <Component
+          onAccountsExist={this.onAccountsExistInEditor}
           onChangeAccount={this.onChangeAccount}
           onCreateAccount={this.onCreateAccount}
+          onNoAccountsExist={this.onNoAccountsExistInEditor}
         />
       </main>
     );
+  }
+
+  onAccountsExistInEditor = () => {
+    this.setState({
+      isAccountsInEditor: true
+    });
   }
 
   onChangeAccount = () => {
@@ -101,6 +101,19 @@ class AccountsApp extends React.PureComponent<Props, State> {
     this.setState({ action });
   }
 
+  onNoAccountsExistInEditor = () => {
+    const { action } = this.state;
+
+    // Show Restorer tab instead of Editor tab when no accounts exist
+    if (action === 'edit') {
+      this.selectRestore();
+    }
+
+    this.setState({
+      isAccountsInEditor: false
+    });
+  }
+
   selectEdit = (): void => {
     this.setState({ action: 'edit' });
   }
@@ -110,6 +123,4 @@ class AccountsApp extends React.PureComponent<Props, State> {
   }
 }
 
-export default withObservableBase(
-  accountObservable.subject, { propName: 'accountAll' }
-)(translate(AccountsApp));
+export default translate(AccountsApp);

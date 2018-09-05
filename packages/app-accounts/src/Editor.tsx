@@ -15,12 +15,15 @@ import keyring from '@polkadot/ui-keyring/index';
 import accountObservable from '@polkadot/ui-keyring/observable/accounts';
 import withObservableBase from '@polkadot/ui-react-rx/with/observableBase';
 
+import { isNoAccounts } from './util/accounts';
 import DownloadButton from './DownloadButton';
 import translate from './translate';
 
 type Props = I18nProps & {
   accountAll?: Array<any>,
-  onChangeAccount: () => void
+  onAccountsExist: () => void
+  onChangeAccount: () => void,
+  onNoAccountsExist: () => void
 };
 
 type State = {
@@ -37,6 +40,16 @@ class Editor extends React.PureComponent<Props, State> {
     super(props);
 
     this.state = this.createState(null, null);
+  }
+
+  componentDidUpdate () {
+    const { accountAll, onAccountsExist, onNoAccountsExist } = this.props;
+
+    if (isNoAccounts(accountAll)) {
+      onNoAccountsExist();
+    } else {
+      onAccountsExist();
+    }
   }
 
   render () {
