@@ -24,6 +24,7 @@
     "@polkadot/app-storage": "^0.20.1",
     "@polkadot/app-toolbox": "^0.20.1",
     "@polkadot/app-transfer": "^0.20.1",
+    "@polkadot/app-txpool": "^0.20.1",
     "@polkadot/app-vanitygen": "^0.20.1",
     "@polkadot/ui-app": "^0.20.1",
     "@polkadot/ui-signer": "^0.20.1"

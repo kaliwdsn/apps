@@ -22,6 +22,7 @@ const packages = [
   'app-storage',
   'app-toolbox',
   'app-transfer',
+  'app-txpool',
   'app-vanitygen',
   'ui-app',
   'ui-identicon',

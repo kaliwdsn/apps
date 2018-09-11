@@ -15,6 +15,7 @@ import staking from './staking';
 import storage from './storage';
 import toolbox from './toolbox';
 import transfer from './transfer';
+import txpool from './txpool';
 import vanitygen from './vanitygen';
 
 export default ({
@@ -31,6 +32,7 @@ export default ({
     null,
     storage,
     extrinsics,
+    txpool,
     null,
     vanitygen,
     rpc,
