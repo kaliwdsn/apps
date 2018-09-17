@@ -2,8 +2,6 @@
 /* This software may be modified and distributed under the terms
 /* of the ISC license. See the LICENSE file for details. */
 
-@import 'partials/_variables.css';
-
 .ui--output {
   background: #f9f9f9;
   border-radius: 4px;
@@ -31,13 +29,61 @@
   border-radius: .28571429rem !important;
 }
 
+header .ui--Button-Group {
+  text-align: center;
+}
+
+.ui--AddressMini {
+  display: inline-block;
+  padding: 0 0.25rem 0 0;
+}
+
+.ui--AddressMini.padded {
+  display: inline-block;
+  padding: 0.25rem 0 0 0;
+}
+
+.ui--AddressMini-info div {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.ui--AddressMini-address {
+  font-family: monospace;
+}
+
+.ui--AddressMini .ui--IdentityIcon {
+  margin-left: 1rem;
+  margin-right: 0.5rem;
+}
+
+.ui--AddressMini .ui--Balance {
+  font-size: 0.75rem;
+  margin-top: -0.5rem;
+  text-align: right;
+}
+
+.ui--AddressRow {
+  display: flex;
+  width: 100%;
+}
+
+.ui--AddressRow-base {
+  display: flex;
+}
+
+.ui--AddressRow-icon {
+  margin-right: 1em;
+}
+
 .ui--AddressSummary {
-  padding: 0 2em;
+  padding: 0 1em;
   text-align: left;
   white-space: nowrap
 }
 
 .ui--AddressSummary-base {
+  padding: 0 1em;
   text-align: center;
 }
 
@@ -45,6 +91,10 @@
 .ui--AddressSummary-children {
   display: inline-block;
   vertical-align: top;
+}
+
+.ui--AddressSummary-children {
+  padding-top: 0.5rem;
 }
 
 .ui--AddressSummary .rx--updated {
@@ -60,6 +110,7 @@
   display: block
 }
 
+.ui--Balance,
 .ui--AddressSummary-balance,
 .ui--AddressSummary-nonce {
   opacity: 0.45;
@@ -72,10 +123,11 @@
 
 .ui--AddressSummary-data {
   padding: 0.5em 0;
+  white-space: nowrap;
 }
 
 .ui--AddressSummary-data * {
-  margin: 0 0.25rem !important;
+  /* margin: 0 0.25rem !important; */
   vertical-align: middle;
 }
 
@@ -84,4 +136,33 @@
   font-family: monospace;
   font-size: 1.5em;
   padding: 0;
+}
+
+.ui--CardSummary .ui.label {
+  padding-left: 0;
+  padding-right: 0;
+  padding-top: 0;
+}
+
+.ui--Chart {
+  position: relative;
+  display: inline-block;
+  padding: 1em 1em 0;
+  height: 15vw;
+  width: 15vw;
+}
+
+.ui--CardSummary-large {
+  font-size: 3rem;
+  font-weight: 100;
+  line-height: 3rem;
+  text-align: right;
+}
+
+.ui--CardSummary-progress {
+  margin: 0.25rem 0 -0.5rem !important;
+}
+
+.ui--CopyButton {
+  cursor: copy !important;
 }

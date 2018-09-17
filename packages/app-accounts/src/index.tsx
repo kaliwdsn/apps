@@ -7,15 +7,15 @@ import { I18nProps } from '@polkadot/ui-app/types';
 import './index.css';
 
 import React from 'react';
-
-import Button from '@polkadot/ui-app/Button';
-import classes from '@polkadot/ui-app/util/classes';
+import Tabs from '@polkadot/ui-app/Tabs';
 
 import Creator from './Creator';
 import Editor from './Editor';
 import translate from './translate';
 
-type Props = I18nProps & {};
+type Props = I18nProps & {
+  basePath: string
+};
 
 type Actions = 'create' | 'edit';
 
@@ -33,39 +33,36 @@ class AccountsApp extends React.PureComponent<Props, State> {
   state: State = { action: 'edit' };
 
   render () {
-    const { className, style, t } = this.props;
+    const { t } = this.props;
     const { action } = this.state;
     const Component = Components[action];
+    const items = [
+      {
+        name: 'edit',
+        text: t('app.edit', { defaultValue: 'Edit account' })
+      },
+      {
+        name: 'create',
+        text: t('app.create', { defaultValue: 'Create account' })
+      }
+    ];
 
     return (
-      <div
-        className={classes('accounts--App', className)}
-        style={style}
-      >
-        <Button.Group className='accounts--App-navigation'>
-          <Button
-            isPrimary={action === 'edit'}
-            onClick={this.selectEdit}
-            text={t('app.edit', {
-              defaultValue: 'Edit account'
-            })}
+      <main className='accounts--App'>
+        <header>
+          <Tabs
+            activeItem={action}
+            items={items}
+            onChange={this.onMenuChange}
           />
-          <Button.Or />
-          <Button
-            isPrimary={action === 'create'}
-            onClick={this.selectCreate}
-            text={t('app.create', {
-              defaultValue: 'Create account'
-            })}
-          />
-        </Button.Group>
+        </header>
         <Component onBack={this.selectEdit} />
-      </div>
+      </main>
     );
   }
 
-  selectCreate = (): void => {
-    this.setState({ action: 'create' });
+  onMenuChange = (action: Actions) => {
+    this.setState({ action });
   }
 
   selectEdit = (): void => {

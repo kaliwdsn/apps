@@ -2,64 +2,92 @@
 // This software may be modified and distributed under the terms
 // of the ISC license. See the LICENSE file for details.
 
-import { BareProps } from '@polkadot/ui-app/types';
+import { I18nProps } from '@polkadot/ui-app/types';
+import { RxBalanceMap } from '@polkadot/ui-react-rx/ApiObservable/types';
 
 import React from 'react';
-import storage from '@polkadot/storage';
-import encodeAddress from '@polkadot/util-keyring/address/encode';
-import classes from '@polkadot/ui-app/util/classes';
-import withStorage from '@polkadot/ui-react-rx/with/storage';
+import Tabs from '@polkadot/ui-app/Tabs';
+import withObservable from '@polkadot/ui-react-rx/with/observable';
 import withMulti from '@polkadot/ui-react-rx/with/multi';
 
 import './index.css';
 
 import StakeList from './StakeList';
-import Summary from './Summary';
+import Overview from './Overview';
+import translate from './translate';
 
-type Props = BareProps & {
-  intentions?: Array<string>,
-  validators?: Array<string>
+type Actions = 'actions' | 'overview';
+
+type Props = I18nProps & {
+  basePath: string,
+  validatingBalances?: RxBalanceMap,
+  stakingIntentions?: Array<string>,
+  sessionValidators?: Array<string>
 };
 
-const transformAddresses = (publicKeys: Array<Uint8Array>) =>
-  publicKeys.map(encodeAddress);
+type State = {
+  action: Actions
+};
 
-class App extends React.PureComponent<Props> {
+// FIXME React-router would probably be the best route, not home-grown
+const Components: { [index: string]: React.ComponentType<any> } = {
+  'overview': Overview,
+  'actions': StakeList
+};
+
+class App extends React.PureComponent<Props, State> {
+  state: State;
+
+  constructor (props: Props) {
+    super(props);
+
+    this.state = {
+      action: 'overview'
+    };
+  }
+
   render () {
-    const { className, intentions = [], style, validators = [] } = this.props;
+    const { action } = this.state;
+    const { sessionValidators = [], stakingIntentions = [], t, validatingBalances = {} } = this.props;
+    const Component = Components[action];
+    const items = [
+      {
+        name: 'overview',
+        text: t('app.overview', { defaultValue: 'Staking Overview' })
+      },
+      {
+        name: 'actions',
+        text: t('app.actions', { defaultValue: 'Account Actions' })
+      }
+    ];
 
     return (
-      <div
-        className={classes('staking--App', className)}
-        style={style}
-      >
-        <Summary
-          intentions={intentions}
-          validators={validators}
+      <main className='staking--App'>
+        <header>
+          <Tabs
+            activeItem={action}
+            items={items}
+            onChange={this.onMenuChange}
+          />
+        </header>
+        <Component
+          balances={validatingBalances}
+          intentions={stakingIntentions}
+          validators={sessionValidators}
         />
-        <StakeList
-          intentions={intentions}
-          validators={validators}
-        />
-      </div>
+      </main>
     );
+  }
+
+  onMenuChange = (action: Actions) => {
+    this.setState({ action });
   }
 }
 
 export default withMulti(
   App,
-  withStorage(
-    storage.staking.public.intentions,
-    {
-      propName: 'intentions',
-      transform: transformAddresses
-    }
-  ),
-  withStorage(
-    storage.session.public.validators,
-    {
-      propName: 'validators',
-      transform: transformAddresses
-    }
-  )
+  translate,
+  withObservable('stakingIntentions'),
+  withObservable('sessionValidators'),
+  withObservable('validatingBalances', { paramProp: 'stakingIntentions' })
 );

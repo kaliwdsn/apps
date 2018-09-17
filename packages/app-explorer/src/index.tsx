@@ -2,41 +2,29 @@
 // This software may be modified and distributed under the terms
 // of the ISC license. See the LICENSE file for details.
 
-import { I18nProps } from '@polkadot/ui-app/types';
+import { BareProps } from '@polkadot/ui-app/types';
 
 import './index.css';
 
 import React from 'react';
+import { Route, Switch } from 'react-router';
 
-import classes from '@polkadot/ui-app/util/classes';
-import BestNumber from '@polkadot/ui-react-rx/BestNumber';
+import BlockByHash from './BlockByHash';
+import Main from './Main';
 
-import BestHash from './BestHash';
-import BlockHeaders from './BlockHeaders';
-import translate from './translate';
+type Props = BareProps & {
+  basePath: string
+};
 
-type Props = I18nProps & {};
-
-class ExplorerApp extends React.PureComponent<Props> {
+export default class ExplorerApp extends React.Component<Props> {
   render () {
-    const { className, style, t } = this.props;
-
     return (
-      <div
-        className={classes('explorer--App', className)}
-        style={style}
-      >
-        <BestNumber
-          className='explorer--BestNumber'
-          label={t('app.bestNumber', {
-            defaultValue: 'best #'
-          })}
-        />
-        <BestHash />
-        <BlockHeaders />
-      </div>
+      <main className='explorer--App'>
+        <Switch>
+          <Route path='/explorer/hash/:hash' component={BlockByHash} />
+          <Route component={Main} />
+        </Switch>
+      </main>
     );
   }
 }
-
-export default translate(ExplorerApp);

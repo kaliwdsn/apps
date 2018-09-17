@@ -9,7 +9,6 @@ import React from 'react';
 
 import InputAddress from '@polkadot/ui-app/InputAddress';
 import Labelled from '@polkadot/ui-app/Labelled';
-import classes from '@polkadot/ui-app/util/classes';
 import Nonce from '@polkadot/ui-react-rx/Nonce';
 
 import translate from './translate';
@@ -38,13 +37,10 @@ class Account extends React.PureComponent<Props, State> {
   }
 
   render () {
-    const { className, defaultValue, isError, style, t } = this.props;
+    const { defaultValue, isError, t } = this.props;
 
     return (
-      <div
-        className={classes('rpc--Account', 'ui--row', className)}
-        style={style}
-      >
+      <div className='rpc--Account ui--row'>
         <div className='large'>
           <InputAddress
             defaultValue={defaultValue}
@@ -79,7 +75,7 @@ class Account extends React.PureComponent<Props, State> {
       >
         <Nonce
           className='ui disabled dropdown selection'
-          onChange={this.onChangeNonce}
+          rxChange={this.onChangeNonce}
           params={publicKey}
         />
       </Labelled>
@@ -94,8 +90,9 @@ class Account extends React.PureComponent<Props, State> {
     );
   }
 
-  onChangeNonce = (nonce: BN): void => {
+  onChangeNonce = (_nonce: BN): void => {
     const { onChange } = this.props;
+    const nonce = _nonce || new BN(0);
 
     this.setState({ nonce }, () =>
       onChange(this.state.publicKey, nonce)

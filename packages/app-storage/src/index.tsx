@@ -9,13 +9,13 @@ import './index.css';
 
 import React from 'react';
 
-import classes from '@polkadot/ui-app/util/classes';
-
 import Queries from './Queries';
 import Selection from './Selection';
 import translate from './translate';
 
-type Props = I18nProps & {};
+type Props = I18nProps & {
+  basePath: string
+};
 
 type State = {
   queue: Array<StorageQuery>
@@ -27,20 +27,16 @@ class StorageApp extends React.PureComponent<Props, State> {
   };
 
   render () {
-    const { className, style } = this.props;
     const { queue } = this.state;
 
     return (
-      <div
-        className={classes('storage--App', className)}
-        style={style}
-      >
+      <main className='storage--App'>
         <Selection onAdd={this.onAdd} />
         <Queries
           onRemove={this.onRemove}
           value={queue}
         />
-      </div>
+      </main>
     );
   }
 

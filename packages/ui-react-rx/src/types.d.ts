@@ -2,10 +2,15 @@
 // This software may be modified and distributed under the terms
 // of the ISC license. See the LICENSE file for details.
 
+import BN from 'bn.js';
+import { Observable } from 'rxjs';
 import { ProviderInterface } from '@polkadot/api-provider/types';
-import { RxApiInterface } from '@polkadot/api-rx/types';
-import { EncodingVersions } from '@polkadot/params/types';
-import { Storage$Key$Value } from '@polkadot/storage/types';
+import { RxApiInterface, RxApiInterface$Method } from '@polkadot/api-rx/types';
+import { Interfaces } from '@polkadot/jsonrpc/types';
+import { EncodingVersions, SectionItem } from '@polkadot/params/types';
+import { Header } from '@polkadot/primitives/header';
+import { Storages, Storage$Key$Value } from '@polkadot/storage/types';
+import { ObservableApiInterface } from './ApiObservable/types';
 
 export type BareProps = {
   className?: string,
@@ -15,6 +20,10 @@ export type BareProps = {
 export type ApiProps = {
   api: RxApiInterface,
   apiConnected: boolean,
+  apiMethods: {
+    [index: string]: boolean
+  },
+  apiObservable: ObservableApiInterface,
   apiSupport: EncodingVersions,
   setApi: (api: RxApiInterface) => void,
   setApiProvider: (provider?: ProviderInterface) => void,
@@ -27,7 +36,7 @@ type OnChangeCb$Fn<T> = (value?: T) => void;
 export type OnChangeCb<T> = OnChangeCb$Obs<T> | OnChangeCb$Fn<T> | undefined;
 
 export type ChangeProps<T> = {
-  onChange?: OnChangeCb<T>
+  rxChange?: OnChangeCb<T>
 };
 
 export type ParamProps = {

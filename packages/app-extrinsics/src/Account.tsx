@@ -2,14 +2,13 @@
 // This software may be modified and distributed under the terms
 // of the ISC license. See the LICENSE file for details.
 
-import { KeyringOption$Type } from '@polkadot/ui-keyring/types';
+import { KeyringOption$Type } from '@polkadot/ui-keyring/options/types';
 import { I18nProps } from '@polkadot/ui-app/types';
 
 import React from 'react';
 
 import InputAddress from '@polkadot/ui-app/InputAddress';
 import Labelled from '@polkadot/ui-app/Labelled';
-import classes from '@polkadot/ui-app/util/classes';
 import Balance from '@polkadot/ui-react-rx/Balance';
 
 import translate from './translate';
@@ -20,7 +19,7 @@ type Props = I18nProps & {
   isError?: boolean,
   isInput?: boolean,
   label: string,
-  onChange: (publicKey: Uint8Array) => void,
+  onChange?: (publicKey: Uint8Array) => void,
   type?: KeyringOption$Type,
   withLabel?: boolean
 };
@@ -41,14 +40,10 @@ class Account extends React.PureComponent<Props, State> {
   }
 
   render () {
-    const { className, defaultValue, isDisabled, isError, isInput, label, style, t, type, withLabel } = this.props;
-    const { publicKey } = this.state;
+    const { defaultValue, isDisabled, isError, isInput, label, type, withLabel } = this.props;
 
     return (
-      <div
-        className={classes('extrinsics--Account', 'ui--row', className)}
-        style={style}
-      >
+      <div className='extrinsics--Account ui--row'>
         <div className='large'>
           <InputAddress
             defaultValue={defaultValue}
@@ -62,27 +57,40 @@ class Account extends React.PureComponent<Props, State> {
             withLabel={withLabel}
           />
         </div>
-        <Labelled
-          className='small'
-          label={t('account.balance', {
-            defaultValue: 'with an available balance of'
-          })}
-          withLabel={withLabel}
-        >
-          <Balance
-            className='ui disabled dropdown selection'
-            params={publicKey}
-          />
-        </Labelled>
+        {this.renderBalance()}
       </div>
     );
   }
 
-  onChange = (publicKey: Uint8Array): void => {
+  private renderBalance (): React.ReactNode {
+    const { t, withLabel } = this.props;
+    const { publicKey } = this.state;
+
+    if (!publicKey) {
+      return null;
+    }
+
+    return (
+      <Labelled
+        className='small'
+        label={t('account.balance', {
+          defaultValue: 'with an available balance of'
+        })}
+        withLabel={withLabel}
+      >
+        <Balance
+          className='ui disabled dropdown selection'
+          params={publicKey}
+        />
+      </Labelled>
+    );
+  }
+
+  private onChange = (publicKey: Uint8Array): void => {
     const { onChange } = this.props;
 
     this.setState({ publicKey }, () =>
-      onChange(publicKey)
+      onChange && onChange(publicKey)
     );
   }
 }
